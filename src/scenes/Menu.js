@@ -4,57 +4,90 @@ class Menu extends Phaser.Scene {
     }
 
     preload() {
-        // load audio
-        this.load.audio('sfx_select', './assets/blip_select12.wav');
-        this.load.audio('sfx_explosion', './assets/explosion38.wav');
-        this.load.audio('sfx_rocket', './assets/rocket_shot.wav');
+        this.load.image('mountain', './assets/mountain.png');
+        this.load.audio('sfx_choose', './assets/choose.wav');
+        this.load.audio('sfx_boom', './assets/boom.wav');
+        this.load.audio('sfx_fireballs', './assets/fireballs.wav');
+        this.load.audio('bg', './assets/relief.wav');
     }
 
     create() {
         // menu text configuration
         let menuConfig = {
-            fontFamily: 'Courier',
-            fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
+            fontFamily: 'Lato',
+            fontSize: '75px',
+            backgroundColor: '#00F4FC',
+            color: '#0045FC',
             align: 'right',
             padding: {
-                top: 5,
-                bottom: 5,
+                top: 0.1,
+                bottom: 0.1,
             },
             fixedWidth: 0
         }
+
+        let buttonConfig = {
+          fontFamily: 'Lato',
+          fontSize: '50px',
+          backgroundColor: '#00F4FC',
+          color: '#0045FC',
+          align: 'right',
+          padding: {
+              top: 0.1,
+              bottom: 0.1,
+          },
+          fixedWidth: 0
+      }
+        
+        this.mountain = this.add.tileSprite(0, 0, 640, 480, 'mountain').setOrigin(0, 0);
         
         // show menu text
-        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'ROCKET PATROL', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2, 'Use ←→ arrows to move & (F) to fire', menuConfig).setOrigin(0.5);
-        menuConfig.backgroundColor = '#00FF00';
-        menuConfig.color = '#000';
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'Press ← for Novice or → for Expert', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding*10, 'Fire and Dragon', menuConfig).setOrigin(0.5);
+        menuConfig.fontSize = '28px';
+        menuConfig.backgroundColor = '#00F4FC';
+        menuConfig.color = '#0045FC';
+        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding*3, 'Use ←→ arrows to move and F to fire', menuConfig).setOrigin(0.5);
+        //this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'Press ← for Novice or → for Expert', menuConfig).setOrigin(0.5);
+
+        // play music
+        var music = this.sound.add('bg');
+        music.setLoop(true);
+        music.play();
+
+        buttonConfig.backgroundColor = '#40718B';
+        var textE = this.add.text(game.config.width-530,350, 'Easy', buttonConfig);
+        textE.setInteractive({ useHandCursor: true });
+        textE.on('pointerdown', () => this.clickButtonE());
+
+
+        buttonConfig.backgroundColor = '#40718B';
+        var textH = this.add.text(game.config.width-230,350, 'Hard', buttonConfig);
+        textH.setInteractive({ useHandCursor: true });
+        textH.on('pointerdown', () => this.clickButtonH());
 
         // define keys
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
     }
 
-    update() {
-        if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-          // Novice mode
-          game.settings = {
-            spaceshipSpeed: 3,
-            gameTimer: 60000    
-          }
-          this.sound.play('sfx_select');
-          this.scene.start("playScene");    
-        }
-        if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
-          // Expert mode
-          game.settings = {
-            spaceshipSpeed: 4,
-            gameTimer: 45000    
-          }
-          this.sound.play('sfx_select');
-          this.scene.start("playScene");    
-        }
+    // buttons
+    clickButtonE() {
+      game.settings = {
+        spaceshipSpeed: 3,
+        dinoSpeed: 5,
+        gameTimer: 60000    
       }
+      this.sound.play('sfx_choose');
+      this.scene.start("playScene");  
+    }
+
+    clickButtonH() {
+      game.settings = {
+        spaceshipSpeed: 4,
+        dinoSpeed: 7,
+        gameTimer: 45000    
+      }
+      this.sound.play('sfx_choose');
+      this.scene.start("playScene");  
+    }
 }
